@@ -6,7 +6,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 from typing import Optional
-from gtasks.api.typing import TasksResponse, TaskListsReponse, Task, TaskList
+from gtasks.api.typing import TasksResponse, TaskListsResponse, Task, TaskList
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
@@ -40,8 +40,8 @@ def get_task_list(task_list_id: str) -> TaskList:
     return TaskList(**(service.tasklists().get(tasklist=task_list_id).execute()))
 
 
-def get_task_lists(max_results=5) -> TaskListsReponse:
-    return TaskListsReponse(
+def get_task_lists(max_results=5) -> TaskListsResponse:
+    return TaskListsResponse(
         **(
             service.tasklists()
             .list(

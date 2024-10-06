@@ -46,7 +46,7 @@ class TaskList(BaseModel):
     updated: str = Field(..., description="Last modification time of the task list (as a RFC 3339 timestamp).")
     selfLink: str = Field(..., description="URL pointing to this task list.")
 
-class TaskListsReponse(BaseModel):
+class TaskListsResponse(BaseModel):
     kind: str = Field(..., description="Type of the resource. This is always 'tasks#taskLists'.")
     etag: str = Field(..., description="ETag of the resource.")
     items: Optional[List[TaskList]] = Field(None, description="Collection of items.")

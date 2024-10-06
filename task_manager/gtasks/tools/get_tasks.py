@@ -7,8 +7,8 @@ from gtasks.api import get_task_lists, get_task_list, get_tasks
 from gtasks.api.typing import Task
 from gtasks.api.utils import build_task_hierarchy, build_yaml_task_hierarchy
 
-import yaml
 import json
+
 
 class GetTasksModel(BaseModel):
     """Input for the Get Task Lists tool."""
@@ -18,6 +18,7 @@ class GetTasksModel(BaseModel):
         None,
         description="Task list IDs to retrieve. This is optional. If not provided, first 5 task lists will be retrieved.",
     )
+
 
 class TaskListResponse(BaseModel):
     """Response for the Get Task Lists tool."""
@@ -76,15 +77,17 @@ class GetTasks(BaseTool):
 
     def _run(
         self,
-        task_list_ids: Optional[list[str]],
+        task_list_ids: Optional[list[str]] = None,
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ) -> Tuple[dict, dict]:
         """Retrieve all task lists."""
-        task_lists_ids: list[str] = task_list_ids or get_task_lists().items
+        task_lists_ids: list[str] = task_list_ids or list(
+            map(lambda it: it.id, get_task_lists().items)
+        )
 
         if not task_lists_ids:
             return "No task lists found.", {}
-        
+
         if not isinstance(task_lists_ids, list):
             raise ValueError("Task lists must be a list.")
 
@@ -108,8 +111,10 @@ class GetTasks(BaseTool):
 
     async def _arun(
         self,
-        task_list_ids: Optional[list[str]],
+        task_list_ids: Optional[list[str]] = None,
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ) -> str:
         """Use the tool asynchronously."""
-        return self._run(task_list_ids=task_list_ids, run_manager=run_manager.get_sync())
+        return self._run(
+            task_list_ids=task_list_ids, run_manager=run_manager.get_sync()
+        )
